@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebForge – Instant Business Website Generator</title>
+
+<style>
+    body {
+        font-family: Inter, system-ui, Arial;
+        margin: 0;
+        background: #f5f7fa;
+        color: #111827;
+    }
+
+    header {
+        background: #2563eb;
+        padding: 28px;
+        text-align: center;
+        color: white;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+    }
+
+    h1 { margin: 0; font-size: 28px; }
+    .wrap { max-width: 900px; margin: auto; padding: 20px; }
+
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        margin-top: 6px;
+        font-size: 14px;
+    }
+
+    label { font-weight: 600; }
+
+    button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-top: 12px;
+        font-weight: 600;
+    }
+
+    .generate { background: #10b981; color: white; }
+    .reset { background: #ef4444; color: white; }
+
+    .output {
+        white-space: pre-wrap;
+        background: #1e293b;
+        color: #f1f5f9;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        overflow-x: auto;
+        display: none;
+    }
+
+    .error {
+        border: 2px solid #ef4444 !important;
+        background:#fee2e2 !important;
+    }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>WebForge</h1>
+    <p>Create a beautiful business website instantly.</p>
+</header>
+
+<div class="wrap">
+
+    <div class="card">
+        <label>Business Name</label>
+        <input id="bizName" placeholder="Enter business name">
+
+        <label style="margin-top:14px;">Business Description</label>
+        <textarea id="bizDesc" placeholder="Describe the business"></textarea>
+
+        <label style="margin-top:14px;">Service Offer</label>
+        <textarea id="service" placeholder="List business services"></textarea>
+
+        <button class="generate" onclick="generateSite()">Generate</button>
+        <button class="reset" onclick="resetForm()">Reset</button>
+    </div>
+
+    <div class="card">
+        <h3>Website Output</h3>
+        <div id="output" class="output"></div>
+    </div>
+
+</div>
+
+<script>
+function generateSite() {
+    let name = document.getElementById("bizName");
+    let desc = document.getElementById("bizDesc");
+    let service = document.getElementById("service");
+    let output = document.getElementById("output");
+
+    // Remove old error styles
+    name.classList.remove("error");
+    desc.classList.remove("error");
+    service.classList.remove("error");
+
+    // Validate
+    if (!name.value || !desc.value || !service.value) {
+        if (!name.value) name.classList.add("error");
+        if (!desc.value) desc.classList.add("error");
+        if (!service.value) service.classList.add("error");
+        output.style.display = "block";
+        output.innerHTML = "⚠️ Please fill all fields (highlighted in red).";
+        return;
+    }
+
+    // Generate website HTML
+    let site = `
+<!DOCTYPE html>
+<html>
+<head>
+<title>${name.value}</title>
+<style>
+body{font-family:Arial;background:#f8fafc;margin:0;color:#1e293b;}
+header{background:#2563eb;color:white;padding:20px;text-align:center;}
+section{padding:20px;}
+.card{background:white;margin:12px;padding:18px;border-radius:10px;
+box-shadow:0 6px 20px rgba(0,0,0,0.05);}
+h2{margin-top:0;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>${name.value}</h1>
+<p>${desc.value}</p>
+</header>
+
+<section class="card">
+<h2>Services</h2>
+<p>${service.value.replace(/\n/g, "<br>")}</p>
+</section>
+
+</body>
+</html>
+`;
+
+    output.style.display = "block";
+    output.textContent = site;
+}
+
+function resetForm() {
+    document.getElementById("bizName").value = "";
+    document.getElementById("bizDesc").value = "";
+    document.getElementById("service").value = "";
+    document.getElementById("output").style.display = "none";
+}
+</script>
+
+</body>
+</html>
