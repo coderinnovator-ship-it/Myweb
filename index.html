@@ -1,175 +1,477 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WebForge – Instant Business Website Generator</title>
-
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>WebForge — Instant Website Generator (SaaS)</title>
+<meta name="description" content="WebForge: generate a small business website preview, branding and business card. Export after payment.">
 <style>
-    body {
-        font-family: Inter, system-ui, Arial;
-        margin: 0;
-        background: #f5f7fa;
-        color: #111827;
-    }
+  :root{
+    --bg: #f7fafc;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --accent: #0f62fe;
+    --accent-2: #6f44ff;
+    --radius: 12px;
+    --shadow: 0 8px 30px rgba(15,23,36,0.06);
+    --danger: #ff4d4f;
+    font-family: Inter, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#0f1724;padding:22px -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto}
+  header{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+  .logo{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:700}
+  h1{margin:0;font-size:20px}
+  p.lead{margin:6px 0 0;color:var(--muted);font-size:14px}
 
-    header {
-        background: #2563eb;
-        padding: 28px;
-        text-align: center;
-        color: white;
-        border-bottom-left-radius: 18px;
-        border-bottom-right-radius: 18px;
-    }
+  .grid{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:18px}
+  @media(max-width:920px){ .grid{grid-template-columns:1fr} }
 
-    h1 { margin: 0; font-size: 28px; }
-    .wrap { max-width: 900px; margin: auto; padding: 20px; }
+  .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input[type="text"], input[type="email"], input[type="tel"], textarea, select{
+    width:100%;padding:10px;border-radius:10px;border:1px solid #eaedf2;font-size:15px;margin-bottom:10px;
+  }
+  textarea{min-height:80px;resize:vertical}
+  .row{display:flex;gap:8px}
+  .small{width:100px}
+  .btn{display:inline-flex;gap:10px;align-items:center;padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+  .btn.ghost{background:#fff;border:1px solid #e6e9ef;color:var(--muted)}
+  .muted{color:var(--muted);font-size:13px}
+  .preview{height:640px;border-radius:12px;overflow:hidden;border:1px solid #eee}
+  iframe{width:100%;height:100%;border:0;background:#fff}
+  .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .danger{background:rgba(255,77,79,0.06);border:1px solid rgba(255,77,79,0.16);padding:10px;border-radius:8px;color:var(--danger);margin-bottom:10px}
+  .ok{background:rgba(16,98,254,0.06);border:1px solid rgba(15,98,254,0.12);padding:10px;border-radius:8px;color:var(--accent);margin-bottom:10px}
+  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
 
-    .card {
-        background: white;
-        padding: 20px;
-        border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-        margin-bottom: 20px;
-    }
-
-    input, textarea {
-        width: 100%;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
-        margin-top: 6px;
-        font-size: 14px;
-    }
-
-    label { font-weight: 600; }
-
-    button {
-        padding: 12px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
-        cursor: pointer;
-        margin-right: 10px;
-        margin-top: 12px;
-        font-weight: 600;
-    }
-
-    .generate { background: #10b981; color: white; }
-    .reset { background: #ef4444; color: white; }
-
-    .output {
-        white-space: pre-wrap;
-        background: #1e293b;
-        color: #f1f5f9;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 14px;
-        overflow-x: auto;
-        display: none;
-    }
-
-    .error {
-        border: 2px solid #ef4444 !important;
-        background:#fee2e2 !important;
-    }
-
+  /* preview toolbar */
+  .preview-toolbar{display:flex;align-items:center;justify-content:space-between;padding:10px;background:#fafafa;border-bottom:1px solid #eee}
+  .tag{font-size:13px;color:var(--muted)}
+  .badge{background:#eef2ff;color:var(--accent);padding:6px 10px;border-radius:10px;font-weight:600}
+  .hint{font-size:12px;color:var(--muted)}
+  input[type=file]{display:none}
+  .filelabel{display:inline-block;padding:8px 10px;border-radius:10px;background:#fff;border:1px dashed #e6e9ef;cursor:pointer;font-size:13px}
 </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <div class="logo">WebForge</div>
+      <div>
+        <h1>WebForge — Instant Website Generator</h1>
+        <p class="lead">Create a small business site preview & brand kit. Preview for free — export after payment. (Stripe / Paystack placeholders included)</p>
+      </div>
+    </header>
 
-<header>
-    <h1>WebForge</h1>
-    <p>Create a beautiful business website instantly.</p>
-</header>
+    <div class="grid">
+      <!-- LEFT: form -->
+      <div>
+        <div class="card">
+          <div id="statusBanner" class="ok" style="display:none"></div>
 
-<div class="wrap">
+          <label for="businessName">Business name</label>
+          <input id="businessName" type="text" placeholder="Example: Radiant Tailors or Coder Innovator" value="">
 
-    <div class="card">
-        <label>Business Name</label>
-        <input id="bizName" placeholder="Enter business name">
+          <label for="industry">Industry (one line)</label>
+          <input id="industry" type="text" placeholder='E.g. Tailoring, Barber, Restaurant, Developer services'>
 
-        <label style="margin-top:14px;">Business Description</label>
-        <textarea id="bizDesc" placeholder="Describe the business"></textarea>
+          <label for="tagline">Tagline / Slogan</label>
+          <input id="tagline" type="text" placeholder="What's the short slogan?">
 
-        <label style="margin-top:14px;">Service Offer</label>
-        <textarea id="service" placeholder="List business services"></textarea>
+          <label for="services">Service offered (comma separated)</label>
+          <input id="services" type="text" placeholder="E.g. Custom suits, Repairs, Alterations">
 
-        <button class="generate" onclick="generateSite()">Generate</button>
-        <button class="reset" onclick="resetForm()">Reset</button>
+          <label for="description">Business description (short)</label>
+          <textarea id="description" placeholder="Describe the business in one or two sentences"></textarea>
+
+          <div class="row">
+            <div style="flex:1">
+              <label for="email">Email</label>
+              <input id="email" type="email" placeholder="business@example.com">
+            </div>
+            <div style="width:130px">
+              <label for="phone">Phone</label>
+              <input id="phone" type="tel" placeholder="+12135551234">
+            </div>
+          </div>
+
+          <label for="address">Address (optional)</label>
+          <input id="address" type="text" placeholder="Street, City, Country">
+
+          <label for="hours">Working hours (optional)</label>
+          <input id="hours" type="text" placeholder="Mon–Sat 8:00–17:00">
+
+          <label for="website">Website / Social (optional)</label>
+          <input id="website" type="text" placeholder="https://instagram.com/...">
+
+          <label>Upload Logo (optional)</label>
+          <label class="filelabel" id="logoLabel">Choose logo
+            <input id="logoFile" type="file" accept="image/*">
+          </label>
+          <div style="height:10px"></div>
+
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="generate" class="btn">Generate Preview</button>
+            <button id="reset" class="btn ghost">Reset</button>
+            <div style="flex:1"></div>
+            <!-- pay button (user must click to enable export) -->
+            <button id="payBtn" class="btn ghost">Pay to Export</button>
+          </div>
+
+          <div style="margin-top:10px" class="muted">
+            Preview visible — Export locked until payment. Payments: Stripe / Paystack placeholders.
+          </div>
+
+          <hr style="margin:12px 0;border:none;border-top:1px solid #f1f5f9">
+          <div class="muted"><strong>Why this flow?</strong> People can see the result — they can't download or copy until they pay. Screenshots are possible, but the real code & export remain locked (that's how we protect value).</div>
+        </div>
+
+        <!-- Export actions (locked until paid) -->
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0 0 8px 0">Export (locked)</h3>
+          <div id="exportActions" style="opacity:0.45;pointer-events:none">
+            <div style="display:flex;gap:8px">
+              <button id="copyBtn" class="btn ghost small">Copy HTML</button>
+              <button id="downloadBtn" class="btn ghost small">Download .html</button>
+              <button id="exportKit" class="btn ghost small">Download Brand Kit (zip)</button>
+            </div>
+            <p class="muted" style="margin-top:8px">After payment, these will be enabled. To connect real payments, replace placeholders in code with your Stripe/Paystack links (instructions below).</p>
+          </div>
+
+          <div id="paidBadge" style="display:none;margin-top:10px" class="ok">Payment received — export enabled ✅</div>
+
+          <div style="margin-top:12px" class="muted"><strong>Important:</strong> If the generator detects suspicious raw code in inputs (like &lt;script&gt; or an extremely long base64 image), it will show a red error and refuse to place it into the preview. This prevents the site from "returning code".</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: preview -->
+      <div>
+        <div class="card" style="padding:0">
+          <div class="preview-toolbar">
+            <div>
+              <span class="tag">Preview</span>
+              <span style="margin-left:8px" id="previewType" class="badge">Rendered site</span>
+            </div>
+            <div class="hint">Edit inputs on the left → click <strong>Generate Preview</strong></div>
+          </div>
+          <div id="previewWrap" class="preview">
+            <iframe id="previewFrame" srcdoc="<div style='display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-family:Inter,Arial;'>No preview yet — click Generate Preview</div>"></iframe>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="card muted">
+          <strong>Error / Info</strong>
+          <div id="errorBox" style="display:none;margin-top:8px"></div>
+          <div id="infoBox" style="display:block;margin-top:8px">No errors. Generator will refuse raw scripts or extremely large raw images. Exports locked until payment.</div>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-        <h3>Website Output</h3>
-        <div id="output" class="output"></div>
-    </div>
-
-</div>
+    <footer>
+      <small>© <span id="year"></span> WebForge — Place this single file in a GitHub Pages repo (public). To enable real payments replace the pay placeholders with your payment links.</small>
+    </footer>
+  </div>
 
 <script>
-function generateSite() {
-    let name = document.getElementById("bizName");
-    let desc = document.getElementById("bizDesc");
-    let service = document.getElementById("service");
-    let output = document.getElementById("output");
+  // --- Utilities & DOM
+  const el = id => document.getElementById(id);
+  const year = el('year'); year.textContent = new Date().getFullYear();
 
-    // Remove old error styles
-    name.classList.remove("error");
-    desc.classList.remove("error");
-    service.classList.remove("error");
+  const inputs = {
+    name: el('businessName'),
+    industry: el('industry'),
+    tagline: el('tagline'),
+    services: el('services'),
+    description: el('description'),
+    email: el('email'),
+    phone: el('phone'),
+    address: el('address'),
+    hours: el('hours'),
+    website: el('website'),
+    logoFile: el('logoFile'),
+    logoLabel: el('logoLabel'),
+  };
 
-    // Validate
-    if (!name.value || !desc.value || !service.value) {
-        if (!name.value) name.classList.add("error");
-        if (!desc.value) desc.classList.add("error");
-        if (!service.value) service.classList.add("error");
-        output.style.display = "block";
-        output.innerHTML = "⚠️ Please fill all fields (highlighted in red).";
-        return;
+  const previewFrame = el('previewFrame');
+  const statusBanner = el('statusBanner');
+  const errorBox = el('errorBox');
+  const infoBox = el('infoBox');
+  const previewType = el('previewType');
+
+  const exportActions = el('exportActions');
+  const paidBadge = el('paidBadge');
+  const payBtn = el('payBtn');
+  const generateBtn = el('generate');
+  const resetBtn = el('reset');
+  const copyBtn = el('copyBtn');
+  const downloadBtn = el('downloadBtn');
+
+  let lastGeneratedHTML = '';
+  let paid = false;
+  let cachedLogoDataUrl = '';
+
+  // show status
+  function showStatus(msg, ok=true){
+    statusBanner.style.display = 'block';
+    statusBanner.textContent = msg;
+    statusBanner.className = ok ? 'ok' : 'danger';
+    setTimeout(()=>{ statusBanner.style.display='none'; }, 3500);
+  }
+
+  // basic validation to refuse "raw code" injection or giant base64
+  function validateInputs(){
+    errorBox.style.display='none';
+    infoBox.style.display='block';
+    const suspectPatterns = [
+      /<script/i,
+      /<\s*iframe/i,
+      /onerror\s*=/i,
+      /<\/?html/i
+    ];
+    const fields = [
+      inputs.name.value,
+      inputs.industry.value,
+      inputs.tagline.value,
+      inputs.services.value,
+      inputs.description.value,
+      inputs.email.value,
+      inputs.phone.value,
+      inputs.address.value,
+      inputs.website.value
+    ];
+    for(const f of fields){
+      if(!f) continue;
+      for(const p of suspectPatterns){
+        if(p.test(f)){
+          errorBox.style.display='block';
+          errorBox.className='danger';
+          errorBox.textContent = 'Danger: detected suspicious code in one of the text fields. Remove HTML or script tags.';
+          return {ok:false, reason:'text_suspicious'};
+        }
+      }
     }
 
-    // Generate website HTML
-    let site = `
-<!DOCTYPE html>
-<html>
-<head>
-<title>${name.value}</title>
+    // if logo data url is extremely large, refuse
+    if(cachedLogoDataUrl && cachedLogoDataUrl.length > 200000){ // ~200 KB safety threshold
+      errorBox.style.display='block';
+      errorBox.className='danger';
+      errorBox.textContent = 'Logo image is too large or is raw embedded code. Please choose a smaller image (under ~200 KB) or leave it empty.';
+      return {ok:false, reason:'logo_too_large'};
+    }
+
+    return {ok:true};
+  }
+
+  // read logo file
+  inputs.logoFile.addEventListener('change', async (e)=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    // limit size early (1.5MB absolute upper bound)
+    if(f.size > 2_500_000){
+      showStatus('Logo too large — choose a smaller file (<2.5MB).', false);
+      inputs.logoFile.value = '';
+      cachedLogoDataUrl = '';
+      return;
+    }
+    const r = new FileReader();
+    r.onload = ()=> {
+      cachedLogoDataUrl = r.result.toString();
+      // if base64 is extremely large, warn (we'll validate later)
+      if(cachedLogoDataUrl.length > 250_000) showStatus('Logo looks large — smaller logos load faster.', false);
+      el('logoLabel').textContent = 'Logo chosen';
+    };
+    r.readAsDataURL(f);
+  });
+
+  // Build services list
+  function buildServicesHtml(servicesText){
+    const arr = servicesText.split(',').map(s => s.trim()).filter(Boolean);
+    if(arr.length === 0) return `<li>Service 1 — Short description</li><li>Service 2 — Short description</li>`;
+    return arr.map(s => `<li style="margin-bottom:8px">${escapeHtml(s)} — Short description about this service.</li>`).join('');
+  }
+
+  // small html escaping
+  function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // Build preview HTML string (rendered site)
+  function buildSiteHtml(opts){
+    const {name,industry,tagline,desc,services,email,phone,address,hours,website,logoDataUrl,accent} = opts;
+    const hero = escapeHtml(name || (industry ? `${escapeHtml(industry)} Business` : 'Local Business'));
+    const meta = escapeHtml(desc || hero + ' — generated by WebForge');
+
+    // choose accent color
+    const accentColor = accent || '#10b981';
+
+    // Services HTML
+    const servicesHtml = buildServicesHtml(services);
+
+    // small logo HTML (if provided)
+    const logoHtml = logoDataUrl ? `<img src="${logoDataUrl}" alt="logo" style="height:64px;border-radius:8px;object-fit:contain">` : `<div style="height:64px;width:64px;border-radius:12px;background:${accentColor};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px">${escapeHtml((name||'')[0]||'W')}</div>`;
+
+    // site html
+    return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${hero}</title><meta name="description" content="${meta}">
 <style>
-body{font-family:Arial;background:#f8fafc;margin:0;color:#1e293b;}
-header{background:#2563eb;color:white;padding:20px;text-align:center;}
-section{padding:20px;}
-.card{background:white;margin:12px;padding:18px;border-radius:10px;
-box-shadow:0 6px 20px rgba(0,0,0,0.05);}
-h2{margin-top:0;}
+  body{font-family:Inter,system-ui,Arial;margin:0;background:#fafafa;color:#0f1724}
+  .wrap{max-width:900px;margin:0 auto;padding:28px}
+  header{background:${accentColor};color:#fff;padding:28px;border-radius:12px}
+  .brand{display:flex;gap:16px;align-items:center}
+  h1{margin:0;font-size:24px}
+  p.lead{margin:6px 0 0;opacity:.95}
+  .section{background:#fff;border-radius:10px;padding:18px;margin-top:18px;box-shadow:0 6px 20px rgba(15,23,36,0.04)}
+  .grid{display:flex;gap:18px;flex-wrap:wrap}
+  .col{flex:1;min-width:200px}
+  ul{padding-left:18px}
+  footer{margin-top:28px;padding:12px;text-align:center;color:#64748b}
+  @media(max-width:720px){header{padding:20px}h1{font-size:20px}.grid{flex-direction:column}}
 </style>
-</head>
-<body>
-
+</head><body>
 <header>
-<h1>${name.value}</h1>
-<p>${desc.value}</p>
+  <div class="wrap">
+    <div class="brand">${logoHtml}<div><h1>${hero}</h1><div style="opacity:.9">${escapeHtml(tagline||'')}</div></div></div>
+  </div>
 </header>
+<div class="wrap">
+  <section class="section" id="about">
+    <h2>About</h2>
+    <p class="lead">${escapeHtml(desc || 'We provide great service and customer satisfaction.')}</p>
+  </section>
 
-<section class="card">
-<h2>Services</h2>
-<p>${service.value.replace(/\n/g, "<br>")}</p>
-</section>
+  <section class="section" id="services">
+    <h2>Services</h2>
+    <div class="grid">
+      <div class="col">
+        <ul>${servicesHtml}</ul>
+      </div>
+      <div class="col">
+        <p><strong>Why choose us?</strong></p>
+        <p>Experienced team · Trusted · Best value</p>
+      </div>
+    </div>
+  </section>
 
-</body>
-</html>
-`;
+  <section class="section" id="contact">
+    <h2>Contact</h2>
+    <p>Phone: ${escapeHtml(phone||'—')} · Email: ${escapeHtml(email||'—')}</p>
+    <p>Address: ${escapeHtml(address||'—')}</p>
+    <p>Hours: ${escapeHtml(hours||'—')}</p>
+    ${website ? `<p>Website / Social: <a href="${escapeHtml(website)}">${escapeHtml(website)}</a></p>` : ''}
+  </section>
 
-    output.style.display = "block";
-    output.textContent = site;
-}
+  <footer>
+    &copy; ${new Date().getFullYear()} ${escapeHtml(name||'Business')} · Built with WebForge
+  </footer>
+</div>
+</body></html>`;
+  }
 
-function resetForm() {
-    document.getElementById("bizName").value = "";
-    document.getElementById("bizDesc").value = "";
-    document.getElementById("service").value = "";
-    document.getElementById("output").style.display = "none";
-}
-</script>
+  // generate handler
+  generateBtn.addEventListener('click', ()=>{
+    // validate
+    const v = validateInputs();
+    if(!v.ok) {
+      // invalid input: show red error and focus where likely problem
+      errorBox.style.display='block';
+      errorBox.innerHTML = '';
+      if(v.reason === 'text_suspicious'){
+        errorBox.innerHTML = '<div class="danger">Error: suspicious HTML/code detected in text fields. Remove any tags like &lt;script&gt; or &lt;iframe&gt;.</div>';
+        return;
+      }else if(v.reason === 'logo_too_large'){
+        errorBox.innerHTML = '<div class="danger">Error: logo image is too large. Choose a smaller image under ~200 KB.</div>';
+        return;
+      }else{
+        errorBox.innerHTML = '<div class="danger">Unknown validation error.</div>';
+        return;
+      }
+    }
 
-</body>
-</html>
+    // prepare options
+    const opts = {
+      name: inputs.name.value.trim(),
+      industry: inputs.industry.value.trim(),
+      tagline: inputs.tagline.value.trim(),
+      services: inputs.services.value.trim(),
+      desc: inputs.description.value.trim(),
+      email: inputs.email.value.trim(),
+      phone: inputs.phone.value.trim(),
+      address: inputs.address.value.trim(),
+      hours: inputs.hours.value.trim(),
+      website: inputs.website.value.trim(),
+      logoDataUrl: cachedLogoDataUrl,
+      accent: '#10b981'
+    };
+
+    // Build site html
+    const html = buildSiteHtml(opts);
+
+    // store lastGeneratedHTML
+    lastGeneratedHTML = html;
+
+    // update iframe using srcdoc (renders the site, not code box)
+    previewFrame.srcdoc = html;
+
+    // show info
+    infoBox.style.display='block';
+    errorBox.style.display='none';
+    showStatus('Preview generated — exports remain locked until payment.');
+  });
+
+  // Reset
+  resetBtn.addEventListener('click', ()=>{
+    for(const k of Object.keys(inputs)){
+      if(k === 'logoFile') continue;
+      inputs[k].value = '';
+    }
+    inputs.logoFile.value = '';
+    el('logoLabel').textContent = 'Choose logo';
+    cachedLogoDataUrl = '';
+    previewFrame.srcdoc = "<div style='display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-family:Inter,Arial;'>No preview yet — click Generate Preview</div>";
+    lastGeneratedHTML = '';
+    showStatus('Form reset.');
+  });
+
+  // --- Payment simulation & enabling export
+  // NOTE: Replace the handler below with real payment link flow.
+  payBtn.addEventListener('click', async ()=>{
+    if(!lastGeneratedHTML){
+      showStatus('Generate a preview first before paying.', false);
+      return;
+    }
+
+    // Open a modal or redirect to payment provider in real flow.
+    // For now we simulate a payment flow with a confirm() prompt
+    // Replace this with your Stripe Checkout link or Paystack inline integration.
+    const confirmPayment = confirm('Simulated payment dialog — click OK to simulate a successful payment (replace this with real Stripe/Paystack flow).');
+    if(!confirmPayment) return;
+
+    // On success:
+    paid = true;
+    paidBadge.style.display = 'block';
+    enableExport();
+    showStatus('Payment successful — export enabled.');
+    // In a real integration: verify payment server-side, then enable export.
+  });
+
+  function enableExport(){
+    exportActions.style.opacity = '1';
+    exportActions.style.pointerEvents = 'auto';
+    el('exportActions').classList.remove('locked');
+    el('paidBadge').style.display = 'block';
+  }
+
+  // Copy HTML (only allowed after paid)
+  copyBtn.addEventListener('click', async ()=>{
+    if(!paid){ alert('Pay first to enable copying/exporting.'); return; }
+    try{
+      await navigator.clipboard.writeText(lastGeneratedHTML);
+      showStatus('HTML copied to clipboard.');
+    }catch(e){
+      alert('Copy failed — try Download instead.');
+    }
+  });
+
+  // Download
+  downloadBtn.addEventListener('click', ()=>{
+    if(!paid){ alert
