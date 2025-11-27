@@ -1,64 +1,49 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>WebForge — Instant Website Generator (Demo)</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --card:#ffffff; --muted:#6b7280; --accent:#0f62fe; --danger:#ef4444;
-    --radius:12px; --shadow:0 8px 30px rgba(15,23,36,0.06);
-    --watermark: rgba(0,0,0,0.06);
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:#0f1724;padding:28px;}
-  .wrap{max-width:1100px;margin:0 auto}
-  header{display:flex;gap:14px;align-items:center;margin-bottom:18px}
-  .logo{background:linear-gradient(135deg,#0f62fe,#6f44ff);color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
-  h1{margin:0;font-size:18px}
-  p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
-  .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:16px}
-  label{display:block;font-size:13px;color:var(--muted);margin:8px 0 6px}
-  input[type="text"], input[type="email"], input[type="tel"], textarea, select {
-    width:100%;padding:10px;border:1px solid #eef2f6;border-radius:10px;font-size:14px;
-  }
-  textarea{min-height:80px;resize:vertical}
-  .row{display:flex;gap:12px}
-  .col{flex:1}
-  .small{width:180px;min-width:140px}
-  .actions{display:flex;gap:8px;flex-wrap:wrap}
-  .btn{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
-  .btn.ghost{background:#fff;border:1px solid #e6edf4;color:var(--muted)}
-  .btn.warn{background:var(--danger)}
-  .muted{color:var(--muted);font-size:13px}
-  .preview-wrap{display:flex;gap:14px;align-items:flex-start}
-  .preview{flex:1;border-radius:12px;overflow:hidden;border:1px solid #e9eef6;height:560px;position:relative;background:#fff}
-  .preview iframe{width:100%;height:100%;border:0;display:block}
-  .preview-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:18px}
-  .blur{backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); filter: blur(2px); /* fallback */ }
-  .watermark{
-    position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;font-weight:700;
-    color:var(--watermark);transform:rotate(-20deg);font-size:46px;letter-spacing:8px;opacity:1;
-  }
-  .watermark.small{font-size:26px}
-  .locked-card{background:rgba(255,255,255,0.9);border-radius:12px;padding:12px 16px;text-align:center;box-shadow:0 8px 30px rgba(15,23,36,0.06)}
-  .danger-banner{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.18);color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px}
-  .meta{font-size:13px;color:var(--muted);margin-top:8px}
-  .controls{display:flex;gap:8px;align-items:center}
-  .footer{font-size:13px;color:var(--muted);text-align:center;margin-top:10px}
-  /* modal */
-  .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center;padding:16px}
-  .modal{background:#fff;padding:18px;border-radius:12px;width:420px;max-width:100%}
-  .row-wrap{display:flex;gap:12px;margin-bottom:8px}
-  /* small */
-  @media(max-width:920px){
-    .row{flex-direction:column}
-    .small{width:100%}
-    .preview-wrap{flex-direction:column}
-    .preview{height:420px}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WebForge — Instant Website Generator (Demo)</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --panel:#fff; --muted:#6b7280; --accent:#0f62fe; --text:#0f1724;
+      --radius:12px; --shadow:0 8px 28px rgba(15,23,36,0.06);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding:28px;}
+    .wrap{max-width:980px;margin:0 auto}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+    .logo{background:linear-gradient(135deg,#0f62fe,#6f44ff);color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
+    h1{margin:0;font-size:18px}
+    p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .card{background:var(--panel);border-radius:12px;box-shadow:var(--shadow);padding:16px;margin-bottom:16px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    input[type="text"], input[type="email"], input[type="tel"], textarea, select{
+      width:100%; padding:10px;border:1px solid #e6e9ef;border-radius:10px;font-size:14px;
+      outline:none;transition:all .12s;background:#fff;
+    }
+    textarea{min-height:88px; resize:vertical}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+    .btn.ghost{background:#fff;border:1px solid #e6e9ef;color:var(--text)}
+    .btn.warn{background:#ef4444}
+    .row{display:flex;gap:12px;align-items:center}
+    .preview{border-radius:10px;height:520px;overflow:hidden;border:1px solid #eee;padding:0;background:#fff;position:relative}
+    .preview iframe{width:100%;height:100%;border:0;display:block}
+    .blur-overlay{
+      position:absolute;inset:0;backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-weight:700;
+      background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.28));gap:12px;
+    }
+    .muted{color:var(--muted);font-size:13px}
+    .notice{padding:10px;border-radius:10px;background:#fff;border:1px solid #eee;color:var(--muted);font-size:13px}
+    .error{border-color:#ef4444;box-shadow:0 4px 12px rgba(239,68,68,0.06)}
+    .field-wrap{position:relative}
+    .field-error{position:absolute;right:10px;top:8px;color:#ef4444;font-size:12px}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+    @media (max-width:840px){.grid{grid-template-columns:1fr}.row{flex-direction:column;align-items:stretch}}
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -66,432 +51,303 @@
       <div class="logo">WebForge</div>
       <div>
         <h1>WebForge — Instant Website Generator (Demo)</h1>
-        <p class="lead">Fill the fields, click Generate. Preview is intentionally blurred and watermarked — upgrade to unlock the full website and download/copy.</p>
+        <p class="lead">Fill the fields and click Generate. Preview shows the generated website (blurred until unlock).</p>
       </div>
     </header>
 
-    <div class="panel">
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:240px">
-          <label>Business name</label>
-          <input id="bizName" placeholder="Example: Sunrise Tailors or My Studio">
-        </div>
-        <div style="width:260px">
-          <label>Email</label>
-          <input id="bizEmail" type="email" placeholder="email@example.com">
-        </div>
-        <div style="width:160px">
-          <label>Phone</label>
-          <input id="bizPhone" type="tel" placeholder="+1 555 555 5555">
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:12px">
-        <div class="col">
-          <label>Business Address</label>
-          <input id="bizAddress" placeholder="Leave blank or type city/country">
-        </div>
-        <div style="width:220px">
-          <label>Working hours (text)</label>
-          <input id="bizHours" placeholder="Mon–Sat 8:00–17:00">
-        </div>
-      </div>
-
-      <div style="margin-top:12px" class="row">
-        <div class="col">
-          <label>Service offered (short)</label>
-          <input id="bizService" placeholder="Example: Tailoring, Alterations, Custom designs">
-        </div>
-        <div style="width:260px">
-          <label>Website / Social link (optional)</label>
-          <input id="bizSite" placeholder="https://instagram.com/...">
-        </div>
-      </div>
-
-      <div style="margin-top:12px">
-        <label>Business description (short)</label>
-        <textarea id="bizDesc" placeholder="What you do, in one or two sentences"></textarea>
-      </div>
-
-      <div style="display:flex;gap:12px;margin-top:12px;align-items:center">
-        <div style="flex:1">
-          <label>Business tagline / slogan</label>
-          <input id="bizTag" placeholder="Your short catchy line">
-        </div>
-        <div style="width:140px">
-          <label>Highlight 1</label>
-          <input id="h1" placeholder="Fast turnaround">
-        </div>
-        <div style="width:140px">
-          <label>Highlight 2</label>
-          <input id="h2" placeholder="Quality fabric">
-        </div>
-        <div style="width:140px">
-          <label>Highlight 3</label>
-          <input id="h3" placeholder="Custom fittings">
-        </div>
-      </div>
-
-      <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
-        <div>
-          <label>Upload Logo (optional)</label>
-          <input id="logoInput" type="file" accept="image/*">
-        </div>
-        <div style="margin-left:auto" class="controls">
-          <button id="generate" class="btn">Generate</button>
-          <button id="reset" class="btn ghost">Reset</button>
-          <button id="copyBtn" class="btn ghost" disabled>Copy HTML</button>
-          <button id="downloadBtn" class="btn ghost" disabled>Download</button>
-        </div>
-      </div>
-      <div class="meta">Note: This demo simulates the payflow. Replace the payment stub with your provider (Stripe/Paystack/etc.) when ready.</div>
-    </div>
-
-    <div id="dangerBanner" class="danger-banner" style="display:none"></div>
-
-    <div class="preview-wrap">
-      <div class="panel" style="flex:1">
-        <label>Preview</label>
-        <div id="previewBox" class="preview" aria-live="polite">
-          <!-- iframe or error will be injected here -->
-          <div style="padding:20px;color:var(--muted)">No preview yet. Fill the fields above and click Generate.</div>
-        </div>
-        <div style="margin-top:10px" class="muted">After generate: preview is blurred & watermarked. Upgrade to unlock full interaction, copy and download.</div>
-      </div>
-
-      <div style="width:320px" class="panel">
-        <h3 style="margin-top:0">Site details</h3>
-        <div id="summary" style="min-height:140px;color:var(--muted)">No preview generated yet.</div>
-        <div style="margin-top:12px">
-          <strong>Unlock</strong>
-          <div style="margin-top:8px">
-            <button id="unlockBtn" class="btn">Upgrade to Premium – $19.99</button>
+    <div class="card" id="controlsCard">
+      <div style="display:grid;gap:10px">
+        <div class="grid">
+          <div>
+            <label>Business name <span class="small">(required)</span></label>
+            <div class="field-wrap"><input id="businessName" type="text" placeholder="eg. Bright Tailors"><div class="field-error" id="err-business" style="display:none">Required</div></div>
           </div>
+          <div>
+            <label>Service offered <span class="small">(short, required)</span></label>
+            <div class="field-wrap"><input id="serviceOffer" type="text" placeholder="eg. Tailoring, Alterations"><div class="field-error" id="err-service" style="display:none">Required</div></div>
+          </div>
+
+          <div>
+            <label>Email <span class="small">(required)</span></label>
+            <div class="field-wrap"><input id="email" type="email" placeholder="you@business.com"><div class="field-error" id="err-email" style="display:none">Invalid</div></div>
+          </div>
+          <div>
+            <label>Phone <span class="small">(required)</span></label>
+            <div class="field-wrap"><input id="phone" type="tel" placeholder="+1 555 555 5555"><div class="field-error" id="err-phone" style="display:none">Required</div></div>
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label>Business address <span class="small">(leave blank to keep generic)</span></label>
+            <input id="address" type="text" placeholder="City, State, Country (optional)">
+          </div>
+
+          <div style="grid-column:1/-1">
+            <label>Business tagline / slogan (optional)</label>
+            <input id="tagline" type="text" placeholder="eg. 'Quality, Fast'">
+          </div>
+
+          <div style="grid-column:1/-1">
+            <label>Business description (short)</label>
+            <textarea id="description" placeholder="Describe the business in 1–2 short sentences"></textarea>
+          </div>
+
+          <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button id="generate" class="btn">Generate</button>
+            <button id="reset" class="btn ghost">Reset</button>
+            <div style="flex:1" class="muted small">Preview is blurred & watermarked until you Unlock (demo payment).</div>
+          </div>
+
         </div>
-        <div style="margin-top:14px" class="meta">When unlocked: the preview becomes interactive, Copy/Download enabled. This demo only simulates a payment.</div>
       </div>
     </div>
 
-    <div class="footer">Built by Mei · Paste this file to your GitHub Pages repo as <code>index.html</code></div>
+    <div class="card">
+      <label class="muted">Preview</label>
+      <div id="preview" class="preview">
+        <div style="padding:24px;color:var(--muted)">No preview yet. Fill the fields above and click Generate.</div>
+        <!-- iframe inserted dynamically -->
+      </div>
+    </div>
+
+    <div class="card notice" id="siteDetails">
+      <strong>Site details</strong>
+      <div id="siteSummary" style="margin-top:8px;color:var(--muted)">No preview generated yet.</div>
+      <div style="margin-top:10px">
+        <button id="unlockBtn" class="btn ghost" style="margin-right:8px">Unlock (demo $19.99)</button>
+        <span class="small muted">Unlocking simply removes blur in this demo. Replace with Stripe/Paystack later.</span>
+      </div>
+    </div>
+
+    <footer>Built by Mei · Paste this file to your GitHub Pages repo as <code>index.html</code></footer>
   </div>
 
-  <!-- modal (payment simulation) -->
-  <div id="modalBack" class="modal-back">
-    <div class="modal">
-      <h3 style="margin-top:0">Upgrade to Premium — $19.99</h3>
-      <div class="row-wrap">
-        <div style="flex:1">
-          <label>Cardholder name</label>
-          <input id="pmName" placeholder="Your name">
+  <!-- Unlock / payment modal (simple demo) -->
+  <div id="modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);z-index:999">
+    <div style="width:320px;background:#fff;padding:18px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.25)">
+      <h3 style="margin:0 0 8px">Unlock Premium — $19.99</h3>
+      <div class="small muted">Demo payment (no real card processing). Confirm to unlock preview & enable copy/download in your real product.</div>
+      <div style="margin-top:12px;display:grid;gap:8px">
+        <input id="cardName" placeholder="Cardholder name" />
+        <input id="cardNumber" placeholder="Card (demo) 4242 4242 4242 4242" />
+        <div style="display:flex;gap:8px">
+          <input id="exp" placeholder="MM/YY" />
+          <input id="cvc" placeholder="CVC" />
         </div>
-      </div>
-      <div class="row-wrap">
-        <div style="flex:1">
-          <label>Card (demo)</label>
-          <input id="pmCard" placeholder="4242 4242 4242 4242">
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+          <button id="cancelPay" class="btn ghost">Cancel</button>
+          <button id="confirmPay" class="btn">Confirm payment</button>
         </div>
-        <div style="width:120px">
-          <label>Exp</label>
-          <input id="pmExp" placeholder="12/34">
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button id="pmCancel" class="btn ghost">Cancel</button>
-        <button id="pmConfirm" class="btn">Confirm payment</button>
       </div>
     </div>
   </div>
 
 <script>
-/* ---------- helpers ---------- */
-const el = id => document.getElementById(id);
+  // Utilities
+  const $ = id => document.getElementById(id);
+  const previewEl = $('preview');
+  const summary = $('siteSummary');
 
-let generatedHTML = '';
-let generatedBlobUrl = null;
-let unlocked = false;
-let lastProblemExcerpt = '';
-
-// Elements
-const generateBtn = el('generate');
-const resetBtn = el('reset');
-const copyBtn = el('copyBtn');
-const downloadBtn = el('downloadBtn');
-const previewBox = el('previewBox');
-const dangerBanner = el('dangerBanner');
-const summary = el('summary');
-const unlockBtn = el('unlockBtn');
-const modalBack = el('modalBack');
-const pmCancel = el('pmCancel');
-const pmConfirm = el('pmConfirm');
-
-/* Prevent accidental navigation from blob URLs when replaced */
-function revokeBlob(){
-  try{ if(generatedBlobUrl) URL.revokeObjectURL(generatedBlobUrl); }catch(e){}
-  generatedBlobUrl = null;
-}
-
-/* Simple detection of code-dumps or giant embedded base64 images
-   - if we find '<pre' or '<code' or a very large 'data:image' chunk, we consider it a problem.
-   - show red banner and an excerpt to help user locate which input caused it.
-*/
-function detectProblem(html){
-  const lower = html.toLowerCase();
-  if(lower.includes('<pre') || lower.includes('<code')) return {bad:true, reason:'Generator returned raw code block (pre/code).'};
-  const dimg = 'data:image';
-  const idx = html.indexOf(dimg);
-  if(idx>=0){
-    // if the base64 segment is very long (> 4000 chars) assume it's the big dump issue
-    const after = html.slice(idx, idx + 20000);
-    if(after.length > 4000) {
-      const excerpt = after.slice(0,200).replace(/\\s+/g,' ');
-      return {bad:true, reason:'Detected very large embedded image / base64 payload — generator returned raw content.' , excerpt};
+  // validation helpers
+  function setError(id, show, message) {
+    const el = $('err-'+id);
+    const input = (id==='email' ? $('email') : (id==='phone' ? $('phone') : (id==='business' ? $('businessName') : $('serviceOffer'))));
+    if(show) {
+      el.style.display = 'block';
+      el.textContent = message || 'Required';
+      input.classList.add('error');
+    } else {
+      el.style.display = 'none';
+      input.classList.remove('error');
     }
   }
-  return {bad:false};
-}
 
-/* Build website HTML from fields (keeps country/address blank unless user fills it) */
-function buildWebsiteHTML(data){
-  const {
-    name, email, phone, address, service, desc, tagline, h1,h2,h3, site, hours, logoData
-  } = data;
+  function validateAll() {
+    let ok = true;
+    const business = $('businessName').value.trim();
+    const service = $('serviceOffer').value.trim();
+    const email = $('email').value.trim();
+    const phone = $('phone').value.trim();
 
-  const title = (name || service || 'Business').trim();
-  const hero = title || 'Welcome';
-  const meta = (desc || hero).slice(0,160);
+    if(!business){ setError('business', true); ok=false; } else setError('business', false);
+    if(!service){ setError('service', true); ok=false; } else setError('service', false);
+    if(!phone){ setError('phone', true); ok=false; } else setError('phone', false);
 
-  // Build highlights
-  const highlights = [h1,h2,h3].filter(Boolean).map(h => `<li style="margin-bottom:8px">${escapeHtml(h)}</li>`).join('');
+    // simple email check
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!email || !emailRe.test(email)){ setError('email', true, 'Invalid'); ok=false; } else setError('email', false);
 
-  const contactPhone = phone ? `<a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a>` : '';
-  const contactEmail = email ? `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>` : '';
-  const contactSite = site ? `<a href="${escapeHtml(site)}" target="_blank" rel="noopener">${escapeHtml(site)}</a>` : '';
-  const addressHtml = address ? `<p>Address: ${escapeHtml(address)}</p>` : '';
+    return ok;
+  }
 
-  const logoTag = logoData ? `<img src="${logoData}" alt="${escapeHtml(title)} logo" style="max-width:160px;border-radius:8px">` : '';
+  // build the generated site HTML (keeps content generic and international)
+  function buildWebsiteHTML(data) {
+    const {business, service, email, phone, address, tagline, desc} = data;
+    const siteTitle = business || 'Business';
+    const heroText = tagline || `${service} — trusted & professional`;
+    const contactAddress = address ? address : 'City — Country';
 
-  // Simple responsive page
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${escapeHtml(hero)}</title>
-<meta name="description" content="${escapeHtml(meta)}">
+    // Small, clean one-page template
+    return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>${escapeHtml(siteTitle)}</title>
 <style>
- body{font-family: Inter, system-ui, -apple-system, Roboto, Arial; margin:0; background:#fafafa; color:#0f1724}
- header{background:#10b981;color:#fff;padding:28px;border-bottom-left-radius:18px;border-bottom-right-radius:18px}
- .wrap{max-width:1000px;margin:0 auto;padding:20px}
- h1{margin:0;font-size:28px}
- p.lead{margin:8px 0 0;opacity:.95}
- .section{background:#fff;border-radius:12px;padding:20px;margin-top:18px;box-shadow:0 6px 20px rgba(15,23,36,0.04)}
- .grid{display:flex;gap:18px;flex-wrap:wrap}
- .col{flex:1;min-width:240px}
- ul{padding-left:18px}
- footer{margin-top:28px;padding:12px;text-align:center;color:#6b7280}
- @media(max-width:720px){header{padding:20px}h1{font-size:22px}.grid{flex-direction:column}}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;color:#0f1724;background:#f8fafc}
+.header{background:linear-gradient(90deg,#0f62fe,#6f44ff);color:#fff;padding:36px 20px;text-align:center}
+.wrap{max-width:900px;margin:0 auto;padding:18px}
+h1{margin:0;font-size:28px}
+.lead{margin-top:8px;opacity:.95}
+.section{background:#fff;border-radius:12px;padding:18px;margin-top:18px;box-shadow:0 12px 30px rgba(15,23,36,0.04)}
+.grid{display:flex;gap:16px;flex-wrap:wrap}
+.col{flex:1;min-width:220px}
+ul{padding-left:18px}
+.footer{margin-top:18px;padding:12px;text-align:center;color:#6b7280;font-size:13px}
+@media(max-width:720px){h1{font-size:22px}}
 </style>
-</head>
-<body>
-<header>
+</head><body>
+<header class="header">
   <div class="wrap">
-    <div style="display:flex;gap:14px;align-items:center">
-      <div>${logoTag}</div>
-      <div>
-        <h1>${escapeHtml(hero)}</h1>
-        <p style="margin-top:8px">${escapeHtml(tagline || desc || '')}</p>
-      </div>
-    </div>
+    <h1>${escapeHtml(siteTitle)}</h1>
+    <p class="lead">${escapeHtml(heroText)}</p>
   </div>
 </header>
 <div class="wrap">
-  <section class="section" id="about">
+  <section class="section">
     <h2>About</h2>
-    <p class="lead">${escapeHtml(desc || '')}</p>
+    <p>${escapeHtml(desc || (siteTitle + ' provides ' + service + ' with excellent quality.'))}</p>
   </section>
 
-  <section class="section" id="services">
+  <section class="section">
     <h2>Services</h2>
     <div class="grid">
       <div class="col">
         <ul>
-          ${service ? `<li style="margin-bottom:8px">${escapeHtml(service)}</li>` : ''}
-          ${highlights}
+          <li>${escapeHtml(service)}</li>
+          <li>Appointments</li>
+          <li>Custom orders</li>
+          <li>Consultation</li>
         </ul>
       </div>
       <div class="col">
-        <p><strong>Why choose us?</strong></p>
-        <p>Experienced team · Trusted · Best value</p>
+        <p><strong>Contact</strong></p>
+        <p>Email: <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a><br>Phone: <a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a></p>
+        <p>Address: ${escapeHtml(contactAddress)}</p>
       </div>
     </div>
   </section>
 
-  <section class="section" id="contact">
-    <h2>Contact</h2>
-    <p>Phone: ${contactPhone} · Email: ${contactEmail}</p>
-    ${addressHtml}
-    ${contactSite ? `<p>Website: ${contactSite}</p>` : ''}
-    ${hours ? `<p>Hours: ${escapeHtml(hours)}</p>` : ''}
-  </section>
-
-  <footer>
-    &copy; ${new Date().getFullYear()} ${escapeHtml(title)} · Built with WebForge
-  </footer>
+  <footer class="footer">&copy; ${new Date().getFullYear()} ${escapeHtml(siteTitle)} · Generated with WebForge</footer>
 </div>
-</body>
-</html>`;
-}
-
-/* safe escape */
-function escapeHtml(s){
-  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-/* Show brief summary on side panel */
-function updateSummary(data){
-  summary.innerHTML = `
-    <div style="font-weight:700">${escapeHtml(data.name || data.service || 'No title')}</div>
-    <div class="muted" style="margin-top:6px">${escapeHtml(data.tagline || data.desc || '')}</div>
-    <div style="margin-top:8px">${data.email ? '✉ ' + escapeHtml(data.email) : ''} ${data.phone ? ' • ☎ ' + escapeHtml(data.phone) : ''}</div>
-    <div class="muted" style="margin-top:8px">Address: ${escapeHtml(data.address || '—')}</div>
-  `;
-}
-
-/* Render preview safely (with blur + watermark overlay) */
-function renderPreview(html){
-  // detect problem first
-  const issue = detectProblem(html);
-  dangerBanner.style.display = 'none';
-  if(issue.bad){
-    // show red banner and excerpt, do NOT inject full HTML
-    lastProblemExcerpt = issue.excerpt || '';
-    dangerBanner.textContent = `Problem detected: ${issue.reason} — we blocked full output. Excerpt: "${lastProblemExcerpt}"`;
-    dangerBanner.style.display = 'block';
-    previewBox.innerHTML = `<div style="padding:20px;color:${getComputedStyle(document.documentElement).getPropertyValue('--muted')}">Generator returned suspicious content. Please shorten inputs or remove very large images. Excerpt (short): <pre style="white-space:pre-wrap;max-height:120px;overflow:auto;background:#fff;padding:8px;border-radius:8px;border:1px solid #eee">${escapeHtml(lastProblemExcerpt)}</pre></div>`;
-    return;
+</body></html>`;
   }
 
-  revokeBlob();
-  const blob = new Blob([html], {type:'text/html'});
-  const url = URL.createObjectURL(blob);
-  generatedBlobUrl = url;
-  generatedHTML = html;
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
 
-  // iframe + overlay
-  previewBox.innerHTML = `
-    <iframe id="previewFrame" src="${url}"></iframe>
-    <div class="watermark" id="watermark">PREVIEW — WebForge</div>
-    <div class="preview-overlay" id="previewOverlay">
-      <div class="locked-card">
-        <div style="font-weight:700">Preview locked</div>
-        <div class="muted" style="margin-top:6px">This preview is intentionally blurred and watermarked. Upgrade to unlock full access and download.</div>
-        <div style="margin-top:10px"><button id="overlayUnlock" class="btn">Upgrade to Premium – $19.99</button></div>
-      </div>
-    </div>
-  `;
-  // apply blur via CSS to iframe parent (we blur via overlay effect)
-  const overlay = el('previewOverlay');
-  const watermark = el('watermark');
+  // create blob iframe preview
+  function showPreview(html, unlocked) {
+    previewEl.innerHTML = '';
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const ifr = document.createElement('iframe');
+    ifr.src = url;
+    previewEl.appendChild(ifr);
 
-  // block interaction by placing overlay with pointer-events (already covers)
-  // wire overlay unlock button to open same modal
-  el('overlayUnlock').addEventListener('click', ()=> openPaymentModal());
-
-  // if already unlocked (rare case), call unlockPreview
-  if(unlocked) unlockPreview();
-
-  // disable copy & download until unlocked
-  copyBtn.disabled = true;
-  downloadBtn.disabled = true;
-}
-
-/* Unlock preview: remove blocking overlay, but keep faint visible watermark for IP */
-function unlockPreview(){
-  unlocked = true;
-  // remove overlay but keep watermark faint and pointer-events none
-  const overlay = document.getElementById('previewOverlay');
-  const watermark = document.getElementById('watermark');
-  if(overlay) overlay.style.display = 'none';
-  if(watermark) { watermark.style.opacity = '0.25'; watermark.classList.add('small'); }
-  // enable copy & download
-  copyBtn.disabled = false;
-  downloadBtn.disabled = false;
-  unlockBtn.textContent = 'Unlocked';
-  unlockBtn.classList.add('btn','ghost');
-  // allow iframe interaction by ensuring no covering element prevents pointer events
-  // (we only hid overlay)
-}
-
-/* Reset everything */
-function resetAll(){
-  revokeBlob();
-  generatedHTML = '';
-  lastProblemExcerpt = '';
-  el('bizName').value = '';
-  el('bizEmail').value = '';
-  el('bizPhone').value = '';
-  el('bizAddress').value = '';
-  el('bizService').value = '';
-  el('bizDesc').value = '';
-  el('bizTag').value = '';
-  el('h1').value = '';
-  el('h2').value = '';
-  el('h3').value = '';
-  el('bizSite').value = '';
-  el('bizHours').value = '';
-  el('logoInput').value = '';
-  dangerBanner.style.display = 'none';
-  previewBox.innerHTML = `<div style="padding:20px;color:var(--muted)">No preview yet. Fill the fields above and click Generate.</div>`;
-  summary.innerHTML = `No preview generated yet.`;
-  copyBtn.disabled = true;
-  downloadBtn.disabled = true;
-  unlocked = false;
-  unlockBtn.textContent = 'Upgrade to Premium – $19.99';
-  unlockBtn.classList.remove('ghost');
-}
-
-/* Copy full generated HTML to clipboard (only when unlocked) */
-async function copyHTML(){
-  if(!unlocked || !generatedHTML) return alert('Unlock first.');
-  try{
-    await navigator.clipboard.writeText(generatedHTML);
-    copyBtn.textContent = 'Copied!';
-    setTimeout(()=>copyBtn.textContent='Copy HTML', 1400);
-  }catch(e){
-    alert('Copy failed — try Download instead.');
+    // overlay if locked
+    if(!unlocked) {
+      const overlay = document.createElement('div');
+      overlay.className = 'blur-overlay';
+      overlay.innerHTML = '<div style="font-size:18px">Preview locked</div><div class="small">Unlock to remove watermark & enable downloads</div><button id="overlayUnlock" class="btn" style="margin-top:8px">Unlock</button>';
+      previewEl.appendChild(overlay);
+      setTimeout(()=>{ URL.revokeObjectURL(url); }, 30000);
+      $('overlayUnlock').addEventListener('click', ()=> openUnlockModal());
+    } else {
+      // no overlay
+      setTimeout(()=>{ URL.revokeObjectURL(url); }, 30000);
+    }
   }
-}
 
-/* Download produced HTML file */
-function downloadHTML(){
-  if(!unlocked || !generatedHTML) return alert('Unlock first.');
-  const blob = new Blob([generatedHTML], {type:'text/html'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = (el('bizName').value.trim() || 'site').toLowerCase().replace(/\s+/g,'-') + '.html';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
+  // reset form
+  function resetForm() {
+    ['businessName','serviceOffer','email','phone','address','tagline','description'].forEach(id => {
+      $(id).value = '';
+      const e = document.getElementById('err-'+(id==='businessName'?'business': id==='serviceOffer'?'service': id==='email'?'email': id==='phone'?'phone':'' ));
+      if(e) e.style.display='none';
+      const input = $(id); if(input) input.classList.remove('error');
+    });
+    previewEl.innerHTML = '<div style="padding:24px;color:var(--muted)">No preview yet. Fill the fields above and click Generate.</div>';
+    summary.textContent = 'No preview generated yet.';
+  }
 
-/* Logo handling */
-function readLogoAsDataUrl(file){
-  return new Promise((res, rej) => {
-    if(!file) return res(null);
-    const reader = new FileReader();
-    reader.onload = e => res(e.target.result);
-    reader.onerror = () => res(null);
-    reader.readAsDataURL(file);
+  // unlock modal handling (demo)
+  function openUnlockModal(){ $('modal').style.display='flex'; }
+  function closeUnlockModal(){ $('modal').style.display='none'; }
+  function unlockPreview() {
+    // mark unlocked (in memory)
+    sessionStorage.setItem('webforge_unlocked', '1');
+    // if last generated HTML exists, re-show it unlocked
+    const html = sessionStorage.getItem('webforge_html');
+    if(html) showPreview(html, true);
+    updateSiteDetails(true);
+    closeUnlockModal();
+  }
+
+  function updateSiteDetails(unlocked){
+    if(unlocked) {
+      summary.innerHTML = 'Preview unlocked — interactive.<br><small class="small muted">Copy & Download would be enabled in the full product.</small>';
+    } else {
+      summary.innerHTML = 'Preview is blurred & watermarked until Unlock (demo).';
+    }
+  }
+
+  // event wiring
+  $('generate').addEventListener('click', ()=>{
+    if(!validateAll()) return;
+    const data = {
+      business: $('businessName').value.trim(),
+      service: $('serviceOffer').value.trim(),
+      email: $('email').value.trim(),
+      phone: $('phone').value.trim(),
+      address: $('address').value.trim(),
+      tagline: $('tagline').value.trim(),
+      desc: $('description').value.trim()
+    };
+    const html = buildWebsiteHTML(data);
+    sessionStorage.setItem('webforge_html', html);
+    const unlocked = sessionStorage.getItem('webforge_unlocked') === '1';
+    showPreview(html, unlocked);
+    // update site details summary
+    $('siteSummary').innerHTML = `<strong>${escapeHtml(data.business)}</strong> — ${escapeHtml(data.service)}<br><span class="small muted">${escapeHtml(data.email)} · ${escapeHtml(data.phone)}</span>`;
+    updateSiteDetails(unlocked);
   });
-}
 
-/* Payment modal (simulation) */
-function openPaymentModal(){
-  modalBack.style.display = 'flex';
-}
-function closePaymentModal(){
-  modalBack.style.display = 'none';
-}
+  $('reset').addEventListener('click', resetForm);
 
-/* Simulated payment confirmation */
-function confirmPayment()
+  // unlock modal buttons
+  $('unlockBtn').addEventListener('click', openUnlockModal);
+  $('cancelPay').addEventListener('click', closeUnlockModal);
+  $('confirmPay').addEventListener('click', ()=> {
+    // demo "processing" animation:
+    $('confirmPay').textContent = 'Processing...';
+    setTimeout(()=>{ unlockPreview(); $('confirmPay').textContent = 'Confirm payment'; }, 900);
+  });
+
+  // keyboard-friendly: Enter on fields triggers Generate
+  ['businessName','serviceOffer','email','phone'].forEach(id=>{
+    $(id).addEventListener('keyup', (e)=>{ if(e.key==='Enter') $('generate').click(); });
+  });
+
+  // initialize
+  (function init(){
+    // if previously unlocked, reflect it
+    const unlocked = sessionStorage.getItem('webforge_unlocked') === '1';
+    updateSiteDetails(unlocked);
+    // quick sample values (non-country-specific)
+    $('businessName').value = 'Tailoring shop';
+    $('serviceOffer').value = 'Tailoring & Alterations';
+    $('email').value = 'coderinnovator@gmail.com';
+    $('phone').value = '+234 806 542 5732';
+    $('address').value = ''; // leave blank so user can set country
+    $('tagline').value = 'Quality tailoring, fast';
+    $('description').value = 'We sew modern and classic designs with attention to detail.';
+  })();
+</script>
+</body>
+  </html>
