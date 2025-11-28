@@ -1,439 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>WebForge — Logo, Card & Bio Generator</title>
+<meta charset="UTF-8">
+<title>WebForge Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-  :root{
-    --accent:#0f62fe; --muted:#6b7280; --panel:#fff; --bg:#f6f7fb; --text:#0f1724;
-  }
-  *{box-sizing:border-box}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:var(--bg);color:var(--text);padding:20px}
-  .wrap{max-width:1100px;margin:0 auto}
-  header{display:flex;gap:14px;align-items:center;margin-bottom:18px}
-  .logoBrand{background:linear-gradient(135deg,var(--accent),#6f44ff);color:white;padding:10px 14px;border-radius:10px;font-weight:700}
-  h1{margin:0;font-size:20px}
-  p.lead{margin:6px 0 0;color:var(--muted)}
-  .grid{display:grid;grid-template-columns:1fr 420px;gap:18px}
-  .card{background:var(--panel);border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(15,23,36,0.06)}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  input[type="text"], input[type="email"], input[type="tel"], textarea, select{
-    width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:10px;font-size:15px;
-  }
-  textarea{min-height:72px;resize:vertical}
-  .row{display:flex;gap:10px}
-  .col{flex:1}
-  .actions{display:flex;gap:8px;align-items:center;margin-top:12px}
-  .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
-  .btn.ghost{background:#fff;color:var(--text);border:1px solid #ddd}
-  .muted{color:var(--muted);font-size:13px}
-  .previewBox{display:flex;flex-direction:column;gap:12px}
-  .previewArea{background:#fff;border-radius:10px;padding:12px;border:1px solid #eee;min-height:120px;display:flex;align-items:center;justify-content:center}
-  .controlsSmall{display:flex;gap:8px;align-items:center}
-  .chip{display:inline-flex;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;background:#f2f4f8;border:1px solid #eceff6;font-size:13px;color:var(--muted)}
-  footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-  /* logo preview specifics */
-  .logoPreview svg{width:160px;height:160px;border-radius:14px;background:transparent}
-  /* business card preview */
-  .cardPreview{width:320px;height:180px;border-radius:10px;padding:16px;box-shadow:0 8px 30px rgba(15,23,36,0.06);background:linear-gradient(180deg,#fff,#fbfdff);display:flex;flex-direction:column;justify-content:space-between}
-  .cardTop{display:flex;gap:12px;align-items:center}
-  .cardLogo{width:64px;height:64px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f3f6fb}
-  .cardName{font-weight:700}
-  .cardSmall{font-size:13px;color:var(--muted)}
-  .bioList{display:flex;flex-direction:column;gap:8px}
-  .bioItem{background:#fff;border-radius:8px;padding:10px;border:1px solid #f0f3f7}
-  @media(max-width:980px){ .grid{grid-template-columns:1fr} .cardPreview{width:100%;max-width:420px} }
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+    padding: 20px;
+    color: #222;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 { text-align: center; margin-bottom: 20px; }
+
+input, textarea, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    font-size: 16px;
+}
+
+button {
+    background: black;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+button:hover { opacity: 0.9; }
+
+.preview-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+#websitePreview {
+    border: 2px dashed #999;
+    padding: 20px;
+    text-align: center;
+    background: #fafafa;
+}
+
+.downloadBTN {
+    margin-top: 15px;
+    background: #0284C7;
+}
 </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logoBrand">WebForge</div>
-      <div>
-        <h1>WebForge — Logo, Card & Social Bio</h1>
-        <p class="lead">Generate a simple logo, printable business card, and social media bios in one click.</p>
-      </div>
-    </header>
+<div class="container">
+    <h2>WebForge – Quick Generator</h2>
 
-    <div class="grid">
-      <!-- LEFT: Inputs -->
-      <div class="card">
-        <label>Business / Personal Name</label>
-        <input id="businessName" placeholder="Example: Connect Studio">
+    <input id="logoText" placeholder="Logo Text">
+    <textarea id="bioText" placeholder="Short Bio"></textarea>
+    <input id="businessName" placeholder="Business / Brand Name">
 
-        <div style="height:10px"></div>
-        <label>Email (visible on card)</label>
-        <input id="email" type="email" placeholder="name@example.com">
+    <button onclick="generateAll()">Generate</button>
+    <button onclick="resetAll()">Reset</button>
 
-        <div style="height:10px"></div>
-        <label>Phone (visible on card)</label>
-        <input id="phone" type="tel" placeholder="+1 555 555 5555">
+    <div id="output" style="display:none; margin-top:20px;">
 
-        <div style="height:10px"></div>
-        <label>One-line description (used in hero / bios)</label>
-        <input id="desc" placeholder="Example: Fast, affordable website generator">
-
-        <div style="height:10px"></div>
-        <label>Address (optional)</label>
-        <input id="address" placeholder="City, State, Country">
-
-        <div style="height:10px"></div>
-        <label>Highlight services / tagline (comma separated)</label>
-        <input id="highlights" placeholder="Websites, Logo, Business card">
-
-        <div style="height:10px"></div>
-        <label>Logo icon category</label>
-        <select id="iconCategory">
-          <option value="general">General</option>
-          <option value="tech">Tech</option>
-          <option value="food">Food</option>
-          <option value="fashion">Fashion</option>
-          <option value="health">Health</option>
-        </select>
-
-        <div style="height:10px"></div>
-        <label>Preferred accent color (hex)</label>
-        <input id="accent" placeholder="#0f62fe" value="#0f62fe">
-
-        <div style="height:12px"></div>
-        <div class="actions">
-          <button id="generateBtn" class="btn">Generate</button>
-          <button id="resetBtn" class="btn ghost">Reset</button>
-          <div class="muted" style="margin-left:auto">Mei — everything here runs locally</div>
+        <div class="preview-box">
+            <h3>Logo Preview</h3>
+            <p id="logoOut" style="font-size:22px; font-weight:bold;"></p>
         </div>
-        <div style="height:10px"></div>
-        <div class="muted">Tip: fill name + icon category + accent then press Generate.</div>
-      </div>
 
-      <!-- RIGHT: Previews -->
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>Logo</strong>
-            <div class="controlsSmall">
-              <button id="downloadLogoPng" class="btn ghost small">Download PNG</button>
-              <button id="downloadLogoSvg" class="btn ghost small">Download SVG</button>
+        <div class="preview-box">
+            <h3>Bio Preview</h3>
+            <p id="bioOut"></p>
+        </div>
+
+        <div class="preview-box">
+            <h3>Business Card Preview</h3>
+            <p id="cardOut"></p>
+        </div>
+
+        <div class="preview-box">
+            <h3>Website Preview</h3>
+            <div id="websitePreview">
+                <h2 id="siteTitle">Your Website Title</h2>
+                <p id="siteBio">Your website description appears here...</p>
+                <button class="downloadBTN" onclick="downloadSite()">Download Full Website</button>
             </div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="previewArea logoPreview" id="logoPreview">
-            <div class="muted">No logo yet — click Generate.</div>
-          </div>
         </div>
 
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>Business Card</strong>
-            <div class="controlsSmall">
-              <button id="downloadCardPng" class="btn ghost small">Download PNG</button>
-            </div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="previewArea" id="cardPreviewArea">
-            <div class="muted">No card yet — click Generate.</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>Social Media Bios</strong>
-            <div class="controlsSmall">
-              <button id="copyAllBios" class="btn ghost small">Copy All</button>
-            </div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="previewArea" style="flex-direction:column;align-items:stretch" id="biosArea">
-            <div class="muted">No bios yet — click Generate.</div>
-          </div>
-        </div>
-
-      </div>
     </div>
-
-    <footer>&copy; <span id="year"></span> WebForge — Mei</footer>
-  </div>
+</div>
 
 <script>
-  // utils
-  const $ = id => document.getElementById(id);
-  $('year').textContent = new Date().getFullYear();
+function generateAll() {
+    let logo = document.getElementById("logoText").value;
+    let bio = document.getElementById("bioText").value;
+    let biz = document.getElementById("businessName").value;
 
-  // inputs
-  const nameEl = $('businessName');
-  const emailEl = $('email');
-  const phoneEl = $('phone');
-  const descEl = $('desc');
-  const addressEl = $('address');
-  const highlightsEl = $('highlights');
-  const categoryEl = $('iconCategory');
-  const accentEl = $('accent');
+    if (!logo && !bio && !biz) return alert("Enter at least one field");
 
-  // preview targets
-  const logoPreview = $('logoPreview');
-  const cardPreviewArea = $('cardPreviewArea');
-  const biosArea = $('biosArea');
+    document.getElementById("output").style.display = "block";
 
-  // buttons
-  const genBtn = $('generateBtn');
-  const resetBtn = $('resetBtn');
-  const downloadLogoPng = $('downloadLogoPng');
-  const downloadLogoSvg = $('downloadLogoSvg');
-  const downloadCardPng = $('downloadCardPng');
-  const copyAllBiosBtn = $('copyAllBios');
+    document.getElementById("logoOut").textContent = logo || "Logo";
+    document.getElementById("bioOut").textContent = bio || "Your bio goes here...";
+    document.getElementById("cardOut").textContent = biz || "Your business name";
 
-  // state holders
-  let currentSvgString = '';
-  let currentCardHtml = '';
+    // Website mini preview
+    document.getElementById("siteTitle").textContent = biz || "My Website";
+    document.getElementById("siteBio").textContent = bio || "This is your autogenerated homepage text.";
+}
 
-  // --- Logo generator (SVG) ---
-  function initialsFrom(name){
-    if(!name) return 'W';
-    const parts = name.trim().split(/\s+/).filter(Boolean);
-    if(parts.length === 1) return parts[0].slice(0,2).toUpperCase();
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
+function resetAll() {
+    document.getElementById("logoText").value = "";
+    document.getElementById("bioText").value = "";
+    document.getElementById("businessName").value = "";
+    document.getElementById("output").style.display = "none";
+}
 
-  function pickIcon(category){
-    // return a very simple SVG shape based on category (no external assets)
-    switch(category){
-      case 'tech': return '<g transform="translate(20,18)"><rect x="4" y="8" width="56" height="36" rx="6" /><rect x="16" y="20" width="32" height="16" rx="4" fill="#fff" opacity="0.9"/></g>';
-      case 'food': return '<g transform="translate(18,20)"><path d="M10 10c8-8 34-8 42 0 6 6-6 18-21 18S6 16 10 10z"/><circle cx="24" cy="22" r="3" fill="#fff" opacity="0.9"/></g>';
-      case 'fashion': return '<g transform="translate(18,18)"><path d="M16 8c6-6 26-6 32 0 6 6-6 22-16 22S12 16 16 8z" /><path d="M24 10v18" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.9"/></g>';
-      case 'health': return '<g transform="translate(18,18)"><path d="M28 6c6 0 14 8 14 14s-8 14-14 14S14 28 14 20 22 6 28 6z" /><path d="M28 16v10M21 23h14" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.9"/></g>';
-      default: return '<g transform="translate(18,18)"><circle cx="24" cy="24" r="18"/><rect x="10" y="10" width="28" height="28" rx="6" fill="#fff" opacity="0.08"/></g>';
-    }
-  }
+function downloadSite() {
+    let biz = document.getElementById("businessName").value || "My Website";
+    let bio = document.getElementById("bioText").value || "Welcome to my website.";
 
-  function buildLogoSvg(name, category, accent){
-    const initials = initialsFrom(name);
-    const bg = (accent && /^#/.test(accent)) ? accent : '#0f62fe';
-    const icon = pickIcon(category);
-    // combine: rounded square background + icon + initials
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 64 64">
-        <defs>
-          <filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/></filter>
-        </defs>
-        <rect x="0" y="0" width="64" height="64" rx="12" fill="${bg}" filter="url(#s)"/>
-        ${icon}
-        <text x="50%" y="70%" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,Arial" font-size="18" font-weight="700" fill="rgba(255,255,255,0.98)">${initials}</text>
-      </svg>`;
-    return svg;
-  }
-
-  function setLogoPreview(svgString){
-    currentSvgString = svgString;
-    logoPreview.innerHTML = '';
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = svgString;
-    // add border radius for look
-    const svgEl = wrapper.querySelector('svg');
-    svgEl.style.width = '160px';
-    svgEl.style.height = '160px';
-    logoPreview.appendChild(svgEl);
-  }
-
-  // download helpers
-  function downloadSvg(name, svgString){
-    const blob = new Blob([svgString], {type:'image/svg+xml'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = (name||'logo') + '.svg';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href),3000);
-  }
-
-  function svgToPng(svgString, width=800, height=800){
-    return new Promise((res, rej) => {
-      const img = new Image();
-      const svgBlob = new Blob([svgString], {type:'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(svgBlob);
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        // white background
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        URL.revokeObjectURL(url);
-        canvas.toBlob(b => res(b), 'image/png');
-      };
-      img.onerror = (e) => { URL.revokeObjectURL(url); rej(e); };
-      img.src = url;
-    });
-  }
-
-  async function downloadSvgAsPng(name, svgString){
-    try{
-      const blob = await svgToPng(svgString, 800,800);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = (name||'logo') + '.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href),3000);
-    }catch(e){
-      alert('PNG conversion failed');
-    }
-  }
-
-  // --- Business card generation (HTML -> canvas PNG) ---
-  function buildCardHtml({name, email, phone, address, highlights, logoSvg, accent}){
-    // embed the small svg logo inline inside the card
-    const tinyLogo = logoSvg.replace(/(width="[^"]*")/,'width="64"').replace(/(height="[^"]*")/,'height="64"').replace(/<defs>[\s\S]*?<\/defs>/,'');
-    const highlightHtml = (highlights||'').split(',').filter(Boolean).slice(0,3).map(h => `<div class="chip">${escapeHtml(h.trim())}</div>`).join(' ');
-    const cardHtml = `
-      <div class="cardPreview" style="--accent:${accent||'#0f62fe'}">
-        <div class="cardTop">
-          <div class="cardLogo">${tinyLogo}</div>
-          <div>
-            <div class="cardName">${escapeHtml(name||'')}</div>
-            <div class="cardSmall">${escapeHtml(address||'')}</div>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-size:13px;color:${escapeHtml('#0f1724')}">
-            <div>${escapeHtml(email||'')}</div>
-            <div style="margin-top:6px">${escapeHtml(phone||'')}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">${highlightHtml}</div>
-        </div>
-      </div>
+    let file = `
+    <html>
+    <head><title>${biz}</title></head>
+    <body style="font-family:Arial;padding:20px;">
+    <h1>${biz}</h1>
+    <p>${bio}</p>
+    </body>
+    </html>
     `;
-    return cardHtml;
-  }
 
-  // place card preview into DOM as rendered element
-  function setCardPreview(html){
-    currentCardHtml = html;
-    cardPreviewArea.innerHTML = '';
-    // create wrapper to display (we allow inner card CSS from style block above)
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = html;
-    // small safeguard: ensure styles used in card exist (we used classes defined in the page)
-    cardPreviewArea.appendChild(wrapper.firstElementChild);
-  }
-
-  // capture an element to PNG
-  async function elementToPngBlob(el, width=960, height=null){
-    // We'll use SVG foreignObject technique to render HTML to canvas.
-    // Build an SVG containing the node's outerHTML as foreignObject.
-    const serialized = new XMLSerializer().serializeToString(el);
-    const bbox = el.getBoundingClientRect();
-    const w = width || Math.round(bbox.width);
-    const h = height || Math.round(bbox.height);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
-      <foreignObject width="100%" height="100%">
-        <div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;height:${h}px">
-          ${serialized}
-        </div>
-      </foreignObject>
-    </svg>`;
-    return svgToPng(svg, w, h);
-  }
-
-  // --- Social media bio generator ---
-  function generateBios({name, desc, highlights, address}){
-    const h = (highlights||'').split(',').map(s=>s.trim()).filter(Boolean);
-    const short = desc || (h[0] ? h[0] : 'Professional services');
-    const bios = [];
-    bios.push(`${name} — ${short}. Contact: ${emailEl.value || 'DM'} | ${phoneEl.value || ''}`);
-    bios.push(`${name}: ${short}. Services: ${(h.length? h.join(' · '): 'Services available')}. ${address? address : ''}`);
-    bios.push(`${name} — Built with care. ${short}. Book: ${phoneEl.value || 'via DM'}`);
-    return bios;
-  }
-
-  // helpers
-  function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  // generate flow
-  genBtn.addEventListener('click', async ()=>{
-    // read inputs
-    const name = nameEl.value.trim()||'WebForge User';
-    const email = emailEl.value.trim()||'';
-    const phone = phoneEl.value.trim()||'';
-    const desc = descEl.value.trim()||'';
-    const address = addressEl.value.trim()||'';
-    const highlights = highlightsEl.value.trim()||'';
-    const category = categoryEl.value;
-    let accent = accentEl.value.trim();
-    if(!/^#/.test(accent)) accent = '#' + accent; // naive
-
-    // build logo
-    const svg = buildLogoSvg(name, category, accent);
-    setLogoPreview(svg);
-
-    // enable svg downloads
-    downloadLogoSvg.onclick = ()=> downloadSvg(name.replace(/\s+/g,'-').toLowerCase() || 'logo', svg);
-    downloadLogoPng.onclick = ()=> downloadSvgAsPng(name.replace(/\s+/g,'-').toLowerCase() || 'logo', svg);
-
-    // build card
-    const cardHtml = buildCardHtml({name, email, phone, address, highlights, logoSvg: svg, accent});
-    setCardPreview(cardHtml);
-
-    // wire card PNG download: render the displayed .cardPreview element
-    downloadCardPng.onclick = async () => {
-      try {
-        const cardEl = cardPreviewArea.querySelector('.cardPreview');
-        if(!cardEl){ alert('No card found'); return; }
-        const blob = await elementToPngBlob(cardEl, 1000, 600);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = (name.replace(/\s+/g,'-').toLowerCase() || 'card') + '.png';
-        document.body.appendChild(a);
-        a.click(); a.remove();
-        setTimeout(()=>URL.revokeObjectURL(a.href),3000);
-      }catch(e){
-        alert('Card download failed');
-      }
-    };
-
-    // generate bios
-    const bios = generateBios({name, desc, highlights, address});
-    biosArea.innerHTML = '';
-    const list = document.createElement('div');
-    list.className = 'bioList';
-    bios.forEach((b, i)=>{
-      const it = document.createElement('div'); it.className='bioItem';
-      const pre = document.createElement('div'); pre.textContent = b;
-      const controls = document.createElement('div'); controls.style.marginTop='8px'; controls.style.display='flex'; controls.style.gap='8px';
-      const copyBtn = document.createElement('button'); copyBtn.className='btn ghost small'; copyBtn.textContent='Copy';
-      copyBtn.onclick = async ()=> {
-        try{ await navigator.clipboard.writeText(b); copyBtn.textContent='Copied!'; setTimeout(()=>copyBtn.textContent='Copy',1200); } catch(e){ alert('Copy failed'); }
-      };
-      controls.appendChild(copyBtn);
-      it.appendChild(pre); it.appendChild(controls);
-      list.appendChild(it);
-    });
-    biosArea.appendChild(list);
-
-    // copy all
-    copyAllBiosBtn.onclick = async ()=>{
-      try{
-        await navigator.clipboard.writeText(bios.join('\n\n'));
-        copyAllBiosBtn.textContent = 'Copied!';
-        setTimeout(()=>copyAllBiosBtn.textContent='Copy All',1200);
-      }catch(e){ alert('Copy all failed'); }
-    };
-  });
-
-  resetBtn.addEventListener('click', ()=>{
-    nameEl.value=''; emailEl.value=''; phoneEl.value=''; descEl.value=''; addressEl.value=''; highlightsEl.value=''; categoryEl.value='general'; accentEl.value='#0f62fe';
-    logoPreview.innerHTML = '<div class="muted">No logo yet — click Generate.</div>';
-    cardPreviewArea.innerHTML = '<div class="muted">No card yet — click Generate.</div>';
-    biosArea.innerHTML = '<div class="muted">No bios yet — click Generate.</div>';
-    currentSvgString=''; currentCardHtml='';
-  });
-
-  // small safety: disable default drag of images (to avoid weird drops)
-  document.addEventListener('dragstart', e => { if(e.target.tagName==='IMG') e.preventDefault(); });
-
+    let blob = new Blob([file], { type: "text/html" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "website.html";
+    link.click();
+}
 </script>
+
 </body>
 </html>
