@@ -1,4 +1,42 @@
-<!doctype html>
+copyAllBiosBtn.textContent = 'Copied!';
+        setTimeout(()=> copyAllBiosBtn.textContent = 'Copy All',1200);
+      } catch(e){
+        alert('Copy failed');
+      }
+    };
+
+    // Reset button
+    resetBtn.onclick = ()=>{
+      nameEl.value = '';
+      emailEl.value = '';
+      phoneEl.value = '';
+      descEl.value = '';
+      addressEl.value = '';
+      highlightsEl.value = '';
+      accentEl.value = '#0f62fe';
+      categoryEl.value = 'general';
+
+      logoPreview.innerHTML = '<div class="muted">No logo yet — click Generate.</div>';
+      cardPreviewArea.innerHTML = '<div class="muted">No card yet — click Generate.</div>';
+      biosArea.innerHTML = '<div class="muted">No bios yet — click Generate.</div>';
+
+      currentSvgString = '';
+      currentCardSvgString = '';
+    };
+
+    // top-bar quick export
+    downloadAllLogos.onclick = ()=>{
+      if(!currentSvgString){ alert('Generate first'); return; }
+      downloadSvgAsPng(lastNameSlug + '-logo', currentSvgString, 800);
+    };
+
+    downloadAllCards.onclick = ()=>{
+      if(!currentCardSvgString){ alert('Generate first'); return; }
+      downloadSvgAsPng(lastNameSlug + '-card', currentCardSvgString, 1400);
+    };
+
+  }); // END of generateBtn listener
+</script><!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
