@@ -6,7 +6,11 @@
 <title>WebForge — Logo, Card & Bio Generator</title>
 <style>
   :root{
-    --accent:#0f62fe; --muted:#6b7280; --panel:#fff; --bg:#f6f7fb; --text:#0f1724;
+    --accent:#0f62fe;
+    --muted:#6b7280;
+    --panel:#fff;
+    --bg:linear-gradient(180deg,#eef2ff,#f7f9ff);
+    --text:#0f1724;
   }
   *{box-sizing:border-box}
   body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:var(--bg);color:var(--text);padding:20px}
@@ -44,15 +48,24 @@
   .bioList{display:flex;flex-direction:column;gap:8px}
   .bioItem{background:#fff;border-radius:8px;padding:10px;border:1px solid #f0f3f7}
   @media(max-width:980px){ .grid{grid-template-columns:1fr} .cardPreview{width:100%;max-width:420px} }
+
+  /* subtle helper for small buttons */
+  .small{padding:8px 10px;font-size:14px}
+  .topDownload{margin-left:auto;display:flex;gap:8px;align-items:center}
 </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="logoBrand">WebForge</div>
-      <div>
+      <div style="flex:1">
         <h1>WebForge — Logo, Card & Social Bio</h1>
-        <p class="lead">Generate a simple logo, printable business card, and social media bios in one click.</p>
+        <p class="lead">Generate a logo, printable business card, and social media bios in one click.</p>
+      </div>
+      <div class="topDownload muted">
+        <!-- quick export buttons (logo/card) -->
+        <button id="downloadAllLogos" class="btn ghost small" title="Download logo PNG">Logo PNG</button>
+        <button id="downloadAllCards" class="btn ghost small" title="Download card PNG">Card PNG</button>
       </div>
     </header>
 
@@ -127,6 +140,7 @@
             <strong>Business Card</strong>
             <div class="controlsSmall">
               <button id="downloadCardPng" class="btn ghost small">Download PNG</button>
+              <button id="downloadCardSvg" class="btn ghost small">Download SVG</button>
             </div>
           </div>
           <div style="height:10px"></div>
@@ -155,7 +169,7 @@
   </div>
 
 <script>
-  // utils
+  // helper $
   const $ = id => document.getElementById(id);
   $('year').textContent = new Date().getFullYear();
 
@@ -169,22 +183,24 @@
   const categoryEl = $('iconCategory');
   const accentEl = $('accent');
 
-  // preview targets
+  // preview targets & buttons
   const logoPreview = $('logoPreview');
   const cardPreviewArea = $('cardPreviewArea');
   const biosArea = $('biosArea');
-
-  // buttons
   const genBtn = $('generateBtn');
   const resetBtn = $('resetBtn');
   const downloadLogoPng = $('downloadLogoPng');
   const downloadLogoSvg = $('downloadLogoSvg');
   const downloadCardPng = $('downloadCardPng');
+  const downloadCardSvg = $('downloadCardSvg');
   const copyAllBiosBtn = $('copyAllBios');
+  const downloadAllLogos = $('downloadAllLogos');
+  const downloadAllCards = $('downloadAllCards');
 
-  // state holders
+  // state
   let currentSvgString = '';
-  let currentCardHtml = '';
+  let currentCardSvgString = '';
+  let lastNameSlug = 'webforge-user';
 
   // --- Logo generator (SVG) ---
   function initialsFrom(name){
@@ -195,7 +211,6 @@
   }
 
   function pickIcon(category){
-    // return a very simple SVG shape based on category (no external assets)
     switch(category){
       case 'tech': return '<g transform="translate(20,18)"><rect x="4" y="8" width="56" height="36" rx="6" /><rect x="16" y="20" width="32" height="16" rx="4" fill="#fff" opacity="0.9"/></g>';
       case 'food': return '<g transform="translate(18,20)"><path d="M10 10c8-8 34-8 42 0 6 6-6 18-21 18S6 16 10 10z"/><circle cx="24" cy="22" r="3" fill="#fff" opacity="0.9"/></g>';
@@ -209,84 +224,83 @@
     const initials = initialsFrom(name);
     const bg = (accent && /^#/.test(accent)) ? accent : '#0f62fe';
     const icon = pickIcon(category);
-    // combine: rounded square background + icon + initials
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 64 64">
-        <defs>
-          <filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/></filter>
-        </defs>
-        <rect x="0" y="0" width="64" height="64" rx="12" fill="${bg}" filter="url(#s)"/>
-        ${icon}
-        <text x="50%" y="70%" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,Arial" font-size="18" font-weight="700" fill="rgba(255,255,255,0.98)">${initials}</text>
-      </svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 64 64">
+      <defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/></filter></defs>
+      <rect x="0" y="0" width="64" height="64" rx="12" fill="${bg}" filter="url(#s)"/>
+      ${icon}
+      <text x="50%" y="70%" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,Arial" font-size="18" font-weight="700" fill="rgba(255,255,255,0.98)">${initials}</text>
+    </svg>`;
     return svg;
   }
 
   function setLogoPreview(svgString){
     currentSvgString = svgString;
-    logoPreview.innerHTML = '';
     const wrapper = document.createElement('div');
     wrapper.innerHTML = svgString;
-    // add border radius for look
     const svgEl = wrapper.querySelector('svg');
     svgEl.style.width = '160px';
     svgEl.style.height = '160px';
+    logoPreview.innerHTML = '';
     logoPreview.appendChild(svgEl);
   }
 
   // download helpers
-  function downloadSvg(name, svgString){
-    const blob = new Blob([svgString], {type:'image/svg+xml'});
+  function downloadBlob(filename, blob){
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = (name||'logo') + '.svg';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href),3000);
   }
 
+  function downloadSvgFile(name, svgString){
+    const blob = new Blob([svgString], {type:'image/svg+xml'});
+    downloadBlob((name||'asset') + '.svg', blob);
+  }
+
   function svgToPng(svgString, width=800, height=800){
     return new Promise((res, rej) => {
       const img = new Image();
+      // ensure proper encoding
       const svgBlob = new Blob([svgString], {type:'image/svg+xml;charset=utf-8'});
       const url = URL.createObjectURL(svgBlob);
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        // white background
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        URL.revokeObjectURL(url);
-        canvas.toBlob(b => res(b), 'image/png');
+        try{
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          // white background
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0,0,canvas.width,canvas.height);
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          URL.revokeObjectURL(url);
+          canvas.toBlob(b => res(b), 'image/png');
+        }catch(e){ URL.revokeObjectURL(url); rej(e); }
       };
       img.onerror = (e) => { URL.revokeObjectURL(url); rej(e); };
       img.src = url;
     });
   }
 
-  async function downloadSvgAsPng(name, svgString){
+  async function downloadSvgAsPng(name, svgString, size=1000){
     try{
-      const blob = await svgToPng(svgString, 800,800);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = (name||'logo') + '.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+      const blob = await svgToPng(svgString, size, Math.round(size * 0.56)); // card aspect ratio ~16:9-ish
+      downloadBlob((name||'asset') + '.png', blob);
     }catch(e){
       alert('PNG conversion failed');
+      console.error(e);
     }
   }
 
-  // --- Business card generation (HTML -> canvas PNG) ---
+  // --- Business card: build both HTML preview and an SVG for reliable export ---
+  function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
   function buildCardHtml({name, email, phone, address, highlights, logoSvg, accent}){
-    // embed the small svg logo inline inside the card
-    const tinyLogo = logoSvg.replace(/(width="[^"]*")/,'width="64"').replace(/(height="[^"]*")/,'height="64"').replace(/<defs>[\s\S]*?<\/defs>/,'');
+    // small inline logo for preview
+    const tinyLogo = logoSvg ? logoSvg.replace(/(width="[^"]*")/,'width="64"').replace(/(height="[^"]*")/,'height="64"').replace(/<defs>[\s\S]*?<\/defs>/,'') : '';
     const highlightHtml = (highlights||'').split(',').filter(Boolean).slice(0,3).map(h => `<div class="chip">${escapeHtml(h.trim())}</div>`).join(' ');
     const cardHtml = `
       <div class="cardPreview" style="--accent:${accent||'#0f62fe'}">
@@ -309,36 +323,44 @@
     return cardHtml;
   }
 
-  // place card preview into DOM as rendered element
+  // Build an SVG string for the business card. This is used for PNG export (reliable).
+  function buildCardSvgString({name, email, phone, address, highlights, logoSvg, accent}){
+    // remove defs and set appropriate sizes
+    const tinyLogo = logoSvg ? logoSvg.replace(/<defs>[\s\S]*?<\/defs>/,'').replace(/width="[^"]*"/,'width="84"').replace(/height="[^"]*"/,'height="84"') : '';
+    const accentSafe = (accent && /^#/.test(accent)) ? accent : '#0f62fe';
+    const hList = (highlights||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,3);
+    const highlightsSvg = hList.map((h, i) => `<rect x="${260 - i*90}" y="120" rx="8" ry="8" width="84" height="24" fill="#f2f4f8"/><text x="${260 - i*90 + 42}" y="138" font-size="11" font-family="system-ui,Roboto,Arial" fill="${'#6b7280'}" text-anchor="middle">${escapeHtml(h)}</text>`).join('');
+    // card size: 1000 x 600 (for good export)
+    const svg = `<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <rect rx="28" width="1000" height="600" fill="#ffffff" stroke="#e8eefb" />
+  <rect x="0" y="0" width="1000" height="220" rx="28" fill="${accentSafe}" />
+  <g transform="translate(40,40)">
+    <g transform="translate(0,0)">
+      ${tinyLogo}
+    </g>
+  </g>
+  <g transform="translate(160,80)" font-family="system-ui,Roboto,Arial">
+    <text x="0" y="24" font-size="36" font-weight="700" fill="#0f1724">${escapeHtml(name||'')}</text>
+    <text x="0" y="64" font-size="18" fill="#6b7280">${escapeHtml(address||'')}</text>
+  </g>
+  <g transform="translate(160,160)" font-family="system-ui,Roboto,Arial" fill="#0f1724" font-size="16">
+    <text x="0" y="28">${escapeHtml(email||'')}</text>
+    <text x="0" y="64">${escapeHtml(phone||'')}</text>
+  </g>
+  ${highlightsSvg}
+</svg>`;
+    return svg;
+  }
+
   function setCardPreview(html){
-    currentCardHtml = html;
     cardPreviewArea.innerHTML = '';
-    // create wrapper to display (we allow inner card CSS from style block above)
     const wrapper = document.createElement('div');
     wrapper.innerHTML = html;
-    // small safeguard: ensure styles used in card exist (we used classes defined in the page)
     cardPreviewArea.appendChild(wrapper.firstElementChild);
   }
 
-  // capture an element to PNG
-  async function elementToPngBlob(el, width=960, height=null){
-    // We'll use SVG foreignObject technique to render HTML to canvas.
-    // Build an SVG containing the node's outerHTML as foreignObject.
-    const serialized = new XMLSerializer().serializeToString(el);
-    const bbox = el.getBoundingClientRect();
-    const w = width || Math.round(bbox.width);
-    const h = height || Math.round(bbox.height);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
-      <foreignObject width="100%" height="100%">
-        <div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;height:${h}px">
-          ${serialized}
-        </div>
-      </foreignObject>
-    </svg>`;
-    return svgToPng(svg, w, h);
-  }
-
-  // --- Social media bio generator ---
+  // --- bios ---
   function generateBios({name, desc, highlights, address}){
     const h = (highlights||'').split(',').map(s=>s.trim()).filter(Boolean);
     const short = desc || (h[0] ? h[0] : 'Professional services');
@@ -349,57 +371,49 @@
     return bios;
   }
 
-  // helpers
-  function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  // generate flow
+  // --- Generate flow ---
   genBtn.addEventListener('click', async ()=>{
-    // read inputs
     const name = nameEl.value.trim()||'WebForge User';
     const email = emailEl.value.trim()||'';
     const phone = phoneEl.value.trim()||'';
     const desc = descEl.value.trim()||'';
     const address = addressEl.value.trim()||'';
     const highlights = highlightsEl.value.trim()||'';
-    const category = categoryEl.value;
-    let accent = accentEl.value.trim();
-    if(!/^#/.test(accent)) accent = '#' + accent; // naive
+    const category = categoryEl.value || 'general';
+    let accent = (accentEl.value||'#0f62fe').trim();
+    if(accent && !/^#/.test(accent)) accent = '#'+accent;
+    lastNameSlug = name.replace(/\s+/g,'-').toLowerCase().replace(/[^a-z0-9\-]/g,'');
 
-    // build logo
+    // logo
     const svg = buildLogoSvg(name, category, accent);
     setLogoPreview(svg);
+    // enable logo buttons
+    downloadLogoSvg.onclick = ()=> downloadSvgFile((lastNameSlug || 'logo'), svg);
+    downloadLogoPng.onclick = ()=> downloadSvgAsPng((lastNameSlug || 'logo'), svg, 800);
 
-    // enable svg downloads
-    downloadLogoSvg.onclick = ()=> downloadSvg(name.replace(/\s+/g,'-').toLowerCase() || 'logo', svg);
-    downloadLogoPng.onclick = ()=> downloadSvgAsPng(name.replace(/\s+/g,'-').toLowerCase() || 'logo', svg);
-
-    // build card
+    // card preview html
     const cardHtml = buildCardHtml({name, email, phone, address, highlights, logoSvg: svg, accent});
     setCardPreview(cardHtml);
 
-    // wire card PNG download: render the displayed .cardPreview element
-    downloadCardPng.onclick = async () => {
-      try {
-        const cardEl = cardPreviewArea.querySelector('.cardPreview');
-        if(!cardEl){ alert('No card found'); return; }
-        const blob = await elementToPngBlob(cardEl, 1000, 600);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = (name.replace(/\s+/g,'-').toLowerCase() || 'card') + '.png';
-        document.body.appendChild(a);
-        a.click(); a.remove();
-        setTimeout(()=>URL.revokeObjectURL(a.href),3000);
-      }catch(e){
-        alert('Card download failed');
-      }
+    // prebuild card svg string for reliable export
+    currentCardSvgString = buildCardSvgString({name, email, phone, address, highlights, logoSvg: svg, accent});
+
+    // wire card downloads
+    downloadCardSvg.onclick = ()=> {
+      if(!currentCardSvgString){ alert('Generate first'); return; }
+      downloadSvgFile((lastNameSlug || 'business-card'), currentCardSvgString);
+    };
+    downloadCardPng.onclick = async ()=> {
+      if(!currentCardSvgString){ alert('Generate first'); return; }
+      await downloadSvgAsPng((lastNameSlug || 'business-card'), currentCardSvgString, 1400);
     };
 
-    // generate bios
+    // bios
     const bios = generateBios({name, desc, highlights, address});
     biosArea.innerHTML = '';
     const list = document.createElement('div');
     list.className = 'bioList';
-    bios.forEach((b, i)=>{
+    bios.forEach((b)=>{
       const it = document.createElement('div'); it.className='bioItem';
       const pre = document.createElement('div'); pre.textContent = b;
       const controls = document.createElement('div'); controls.style.marginTop='8px'; controls.style.display='flex'; controls.style.gap='8px';
@@ -417,23 +431,4 @@
     copyAllBiosBtn.onclick = async ()=>{
       try{
         await navigator.clipboard.writeText(bios.join('\n\n'));
-        copyAllBiosBtn.textContent = 'Copied!';
-        setTimeout(()=>copyAllBiosBtn.textContent='Copy All',1200);
-      }catch(e){ alert('Copy all failed'); }
-    };
-  });
-
-  resetBtn.addEventListener('click', ()=>{
-    nameEl.value=''; emailEl.value=''; phoneEl.value=''; descEl.value=''; addressEl.value=''; highlightsEl.value=''; categoryEl.value='general'; accentEl.value='#0f62fe';
-    logoPreview.innerHTML = '<div class="muted">No logo yet — click Generate.</div>';
-    cardPreviewArea.innerHTML = '<div class="muted">No card yet — click Generate.</div>';
-    biosArea.innerHTML = '<div class="muted">No bios yet — click Generate.</div>';
-    currentSvgString=''; currentCardHtml='';
-  });
-
-  // small safety: disable default drag of images (to avoid weird drops)
-  document.addEventListener('dragstart', e => { if(e.target.tagName==='IMG') e.preventDefault(); });
-
-</script>
-</body>
-  </html>
+ 
