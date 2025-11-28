@@ -416,4 +416,115 @@
     return site;
   }
 
-  // generate flow (main button
+  // generate flow (main button// generate flow (main button)
+  genBtn.onclick = () => {
+    const name = nameEl.value.trim();
+    const desc = descEl.value.trim();
+    const email = emailEl.value.trim();
+    const phone = phoneEl.value.trim();
+    const address = addressEl.value.trim();
+    const highlights = highlightsEl.value.trim();
+    const category = categoryEl.value;
+    const accent = accentEl.value.trim();
+
+    if (!name) {
+      alert("Please enter business / personal name.");
+      return;
+    }
+
+    // --- LOGO ---
+    const svg = buildLogoSvg(name, category, accent);
+    setLogoPreview(svg);
+
+    // --- CARD ---
+    const cardHtml = buildCardHtml({
+      name, email, phone, address, highlights,
+      logoSvg: svg, accent
+    });
+    setCardPreview(cardHtml);
+
+    // --- BIOS ---
+    const bios = generateBios({ name, desc, highlights, address });
+    biosArea.innerHTML = '';
+    bios.forEach(b => {
+      const div = document.createElement('div');
+      div.className = 'bioItem';
+      div.textContent = b;
+      biosArea.appendChild(div);
+    });
+
+    // --- WEBSITE ---
+    currentSiteHtml = buildSiteHtml({
+      name, desc, highlights, email, phone, address,
+      logoSvg: svg, accent
+    });
+
+    const blob = new Blob([currentSiteHtml], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    siteFrame.src = url; // show preview
+  };
+
+  // RESET
+  resetBtn.onclick = () => {
+    nameEl.value = "";
+    emailEl.value = "";
+    phoneEl.value = "";
+    descEl.value = "";
+    addressEl.value = "";
+    highlightsEl.value = "";
+    categoryEl.value = "general";
+    accentEl.value = "#0f62fe";
+
+    logoPreview.innerHTML = '<div class="muted">No logo yet — click Generate.</div>';
+    cardPreviewArea.innerHTML = '<div class="muted">No card yet — click Generate.</div>';
+    biosArea.innerHTML = '<div class="muted">No bios yet — click Generate.</div>';
+    siteFrame.src = "";
+    currentSiteHtml = "";
+  };
+
+  // copy all bios
+  copyAllBiosBtn.onclick = () => {
+    const all = [...biosArea.querySelectorAll('.bioItem')].map(x => x.textContent).join("\n\n");
+    navigator.clipboard.writeText(all);
+    alert("Copied!");
+  };
+
+  // logo downloads
+  downloadLogoSvg.onclick = () => {
+    if (!currentSvgString) return alert("Generate logo first.");
+    downloadSvg(nameEl.value.trim() || "logo", currentSvgString);
+  };
+  downloadLogoPng.onclick = async () => {
+    if (!currentSvgString) return alert("Generate logo first.");
+    await downloadSvgAsPng(nameEl.value.trim() || "logo", currentSvgString);
+  };
+
+  // card PNG
+  downloadCardPng.onclick = async () => {
+    const cardEl = cardPreviewArea.querySelector('.cardPreview');
+    if (!cardEl) return alert("Generate card first.");
+    const blob = await elementToPngBlob(cardEl, 1200);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (nameEl.value.trim() || "card") + ".png";
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+
+  // download website
+  downloadSiteBtn.onclick = () => {
+    if (!currentSiteHtml) return alert("Generate website first.");
+    const blob = new Blob([currentSiteHtml], { type: "text/html" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "index.html";
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+
+  // open website in new tab
+  openInNew.onclick = () => {
+    if (!currentSiteHtml) return alert("Generate website first.");
+    const blob = new Blob([currentSiteHtml], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  };
+});
